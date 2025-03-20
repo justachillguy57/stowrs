@@ -1,0 +1,78 @@
+name: CI for Rust. 
+
+on:
+  push:
+    branches:
+      [main, master] 
+  pull_request:
+    branches:
+      [main, master] 
+
+jobs:
+  build-test-lint:
+    name: Build, Test, and Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Rust toolchain
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      # Step 3: Run `cargo build`
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+      # Step 4: Run tests with `cargo test`
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      # Step 5: Run linter with `cargo clippy`
+      - name: Lint with Clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets -- -D warnings
+
+      # Step 6: Check formatting with `cargo fmt`
+      - name: Check code formatting
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+
+  release:
+    name: Release Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Rust toolchain
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      # Step 3: Build release binary
+      - name: Build release binary
+        run: cargo build --release
+
+      # Step 4 (Optional): Upload the binary as an artifact for download
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gnu-stow-rust-binary
+          path: target/release/
