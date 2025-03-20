@@ -43,29 +43,3 @@ jobs:
           command: fmt
           args: -- --check
 
-  release:
-    name: Release Build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      # Step 1: Check out the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Step 2: Set up Rust toolchain
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      # Step 3: Build release binary
-      - name: Build release binary
-        run: cargo build --release
-
-      # Step 4 (Optional): Upload the binary as an artifact for download
-      - name: Upload release artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: gnu-stow-rust-binary
-          path: target/release/
