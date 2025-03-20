@@ -31,6 +31,14 @@ pub fn get_cmd() -> ArgMatches {
                 .long("adopt")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("verbose")
+                .help("enable verbose mode")
+                .required(false)
+                .short('V')
+                .long("verbose")
+                .action(ArgAction::SetTrue),
+        )
         .get_matches();
     cmd
 }
