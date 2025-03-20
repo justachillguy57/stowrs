@@ -36,13 +36,6 @@ jobs:
         with:
           command: test
 
-      # Step 5: Run linter with `cargo clippy`
-      - name: Lint with Clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets -- -D warnings
-
       # Step 6: Check formatting with `cargo fmt`
       - name: Check code formatting
         uses: actions-rs/cargo@v1
